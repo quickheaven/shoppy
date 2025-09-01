@@ -1,4 +1,4 @@
-import { ErrorResponse } from "@/app/common/types/interfaces/error.interface";
+import { ErrorResponse } from "@/app/common/interfaces/error.interface";
 
 export const getErrorMessage = (response: ErrorResponse): string => {
     if (response.message) {

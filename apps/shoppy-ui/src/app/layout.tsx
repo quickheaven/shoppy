@@ -5,6 +5,7 @@ import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { Container, CssBaseline, ThemeProvider } from "@mui/material";
 import darkTheme from "./dark.theme";
+import Header from "./header/header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider theme={darkTheme}>
             <CssBaseline />
+            <Header />
             <Container>{children}</Container>            
             </ThemeProvider>
         </AppRouterCacheProvider>

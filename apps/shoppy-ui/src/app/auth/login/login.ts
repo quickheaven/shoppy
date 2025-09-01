@@ -3,9 +3,9 @@
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { API_URL } from "@/app/constants/api";
-import { getErrorMessage } from "@/app/util/errors";
-import { FormError } from "@/app/common/types/interfaces/form-error.interface";
+import { API_URL } from "@/app/common/constants/api";
+import { getErrorMessage } from "@/app/common/util/errors";
+import { FormError } from "@/app/common/interfaces/form-error.interface";
 
 export default async function login(_prevState: FormError, formData: FormData) {
   const res = await fetch(`${API_URL}/auth/login`, {
