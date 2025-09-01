@@ -17,7 +17,7 @@ export default async function login(_prevState: FormError, formData: FormData) {
   if (!res.ok) {
     return { error: getErrorMessage(parsedRes) };
   }
-  setAuthCookie(res);
+  await setAuthCookie(res);
   redirect("/");
 }
 
@@ -25,7 +25,8 @@ const setAuthCookie = async (response: Response) => {
   const setCookieHeader = response.headers.get("Set-Cookie");
   if (setCookieHeader) {
     const token = setCookieHeader.split(";")[0].split("=")[1];
-    (await cookies()).set({
+    const cookieStore = await cookies();
+    cookieStore.set({
       name: "Authentication",
       value: token,
       secure: true,

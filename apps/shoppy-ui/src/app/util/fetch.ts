@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
-import { API_URL } from "../constants/api";
-import { getErrorMessage } from "./errors";
+import { API_URL } from "../common/constants/api";
+import { getErrorMessage } from "../common/util/errors";
 
 const getHeaders = async () => ({
   Cookie: (await cookies()).toString(),

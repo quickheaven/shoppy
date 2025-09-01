@@ -1,4 +1,4 @@
-export const unathenticatedRoutes = [
+export const unauthenticatedRoutes = [
     {
         title: "Login", 
         path: "/auth/login",
