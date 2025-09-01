@@ -1,12 +1,45 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
+import ms from 'ms';
 import * as bcrypt from 'bcrypt';
+import type { StringValue } from 'ms';
+
+import { Response } from 'express';
+import { UsersService } from '../users/users.service';
+import { ConfigService } from '@nestjs/config';
+import { TokenPayload } from './token-payload.interface';
+import { JwtService } from '@nestjs/jwt';
+import { User } from 'generated/prisma/client';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  async verifyUser(email: string, password: string): Promise<any> {
+  async login(user: User, response: Response) {
+    const expires = new Date();
+    const jwtExpiration =
+      this.configService.getOrThrow<string>('JWT_EXPIRATION');
+    const expirationMs = ms(jwtExpiration as StringValue);
+    expires.setMilliseconds(expires.getMilliseconds() + expirationMs);
+
+    const tokenPayload: TokenPayload = {
+      userId: user.id,
+    };
+    const token = this.jwtService.sign(tokenPayload);
+
+    response.cookie('Authentication', token, {
+      secure: true,
+      httpOnly: true,
+      expires,
+    });
+
+    return { tokenPayload };
+  }
+
+  async verifyUser(email: string, password: string) {
     try {
       const user = await this.usersService.getUser({ email });
       const authenticated = await bcrypt.compare(password, user.password);
@@ -15,7 +48,7 @@ export class AuthService {
       }
       return user;
     } catch (err) {
-      throw new UnauthorizedException('Credentials are not valid');
+      throw new UnauthorizedException('Credentials are not valid.');
     }
   }
 }
