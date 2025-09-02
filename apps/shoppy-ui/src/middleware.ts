@@ -1,49 +1,18 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-
-// This array contains the paths that don't require authentication
-const publicPaths = ['/auth/login', '/auth/signup']
-
-// Helper function to check if the path is public
-function isPublicPath(path: string) {
-  return publicPaths.some(
-    (publicPath) => path.startsWith(publicPath)
-  )
-}
+import { NextRequest } from "next/server";
+import authenticated from "./app/auth/authenticated";
+import { unauthenticatedRoutes } from "./app/common/constants/routes";
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-  console.log('Middleware executing for path:', pathname)
-
-  const authCookie = request.cookies.get('Authentication')
-  console.log('Authentication cookie present:', !!authCookie)
-
-  // Allow access to public paths
-  if (isPublicPath(pathname)) {
-    console.log('Public path detected, allowing access')
-    return NextResponse.next()
+  if (
+    !authenticated() &&
+    !unauthenticatedRoutes.some((route) =>
+      request.nextUrl.pathname.startsWith(route.path)
+    )
+  ) {
+    return Response.redirect(new URL("/auth/login", request.url));
   }
-
-  // Check for authentication
-  if (!authCookie) {
-    console.log('No authentication cookie found, redirecting to login')
-    const loginUrl = new URL('/auth/login', request.url)
-    return NextResponse.redirect(loginUrl)
-  }
-
-  console.log('User authenticated, allowing access')
-  return NextResponse.next()
 }
 
-// Configure the paths that trigger the middleware
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
-  ],
-}
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
+};
