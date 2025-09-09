@@ -1,6 +1,8 @@
 "use client"
 
-import { Modal, Box } from "@mui/material"
+import { Modal, Box, TextField, Button, Stack } from "@mui/material"
+import { useState } from "react";
+
 
 const styles = {
   position: "absolute",
@@ -20,9 +22,43 @@ interface CreateProductModalProps {
 }
 
 export default function CreateProductModal({ open, handleClose }: CreateProductModalProps) {
+  const [response, setResponse] = useState<FormResponse>();
+
   return (
     <Modal open={open} onClose={handleClose}>
-        <Box sx={styles}></Box>
+        <Box sx={styles}>
+          <form className="w-full max-w-xs">
+            <Stack spacing={2}>
+              <TextField 
+                error={!!response?.error}
+                helperText={response?.error}
+                name="name"
+                label="Name"
+                variant="outlined"
+                required
+              /> 
+              <TextField 
+                error={!!response?.error}
+                helperText={response?.error}
+                name="description"
+                label="Description"
+                variant="outlined"
+                required
+              />
+              <TextField
+                name="price"
+                label="Price"
+                variant="outlined"
+                required
+                helperText={response?.error}
+                error={!!response?.error}
+              />
+              <Button type="submit" variant="contained">
+                Submit
+              </Button>
+             </Stack>
+          </form>
+        </Box>
     </Modal>
   )
 }
