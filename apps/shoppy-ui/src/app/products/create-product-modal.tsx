@@ -2,6 +2,7 @@
 
 import { Modal, Box, TextField, Button, Stack } from "@mui/material"
 import { useState } from "react";
+import { FormResponse } from "../common/interfaces/form-response.interface";
 
 
 const styles = {
@@ -22,7 +23,7 @@ interface CreateProductModalProps {
 }
 
 export default function CreateProductModal({ open, handleClose }: CreateProductModalProps) {
-  const [response, setResponse] = useState<FormResponse>();
+  const [response] = useState<FormResponse>();
 
   return (
     <Modal open={open} onClose={handleClose}>
