@@ -3,6 +3,7 @@
 import { Modal, Box, TextField, Button, Stack } from "@mui/material"
 import { useState } from "react";
 import { FormResponse } from "../common/interfaces/form-response.interface";
+import createProduct from "./create-product";
 
 
 const styles = {
@@ -23,12 +24,23 @@ interface CreateProductModalProps {
 }
 
 export default function CreateProductModal({ open, handleClose }: CreateProductModalProps) {
-  const [response] = useState<FormResponse>();
+  const [response, setResponse] = useState<FormResponse>();
+
+  const onClose = () => {
+    setResponse(undefined);
+    handleClose();
+  }
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={onClose}>
         <Box sx={styles}>
-          <form className="w-full max-w-xs">
+          <form className="w-full max-w-xs" action={async (formData) => {
+            const response = await createProduct(formData);
+            setResponse(response);
+            if (!response?.error) {
+              onClose();
+            }
+          }}>
             <Stack spacing={2}>
               <TextField 
                 error={!!response?.error}
