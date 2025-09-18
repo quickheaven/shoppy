@@ -5,7 +5,6 @@ import Product from "./product";
 
 export default async function Products() {
   const products = await getProducts();
-  console.info('-----> ', { products });
 
   return (
     <Grid container spacing={3}>
