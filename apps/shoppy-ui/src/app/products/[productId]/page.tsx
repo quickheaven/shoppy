@@ -3,12 +3,15 @@ import getProduct from "./get-product";
 import Image from "next/image";
 import { getProductImage } from "../product-image";
 
-interface SingleProductProps {
-  params: { productId: string };
-}
+type SingleProductProps = {
+  params: Promise<{
+    productId: string;
+  }>;
+};
 
 export default async function SingleProduct({ params }: SingleProductProps) {
-  const product = await getProduct(+params.productId);
+  const resolvedParams = params instanceof Promise ? await params : params;
+  const product = await getProduct(+resolvedParams.productId);
 
   return (
     <Grid container marginBottom={"2rem"} rowGap={3}>
