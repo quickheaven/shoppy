@@ -50,4 +50,17 @@ export class CheckoutService {
       cancel_url: cancelUrl,
     });
   }
+
+  async handleCheckoutWebhooks(event: any) {
+    if (event.type !== 'checkout.session.completed') {
+      return;
+    }
+
+    const session = await this.stripe.checkout.sessions.retrieve(
+      event.data.object.id,
+    );
+    await this.productService.update(parseInt(session.metadata.productId), {
+      sold: false,
+    });
+  }
 }
