@@ -59,10 +59,13 @@ export class CheckoutService {
     const session = await this.stripe.checkout.sessions.retrieve(
       event.data.object.id,
     );
-    if (session.metadata) {
-      await this.productService.update(parseInt(session.metadata.productId), {
-        sold: false,
-      });
+
+    if (!session.metadata) {
+      throw new BadRequestException('Missing metadata in Stripe session');
     }
+
+    await this.productService.update(parseInt(session.metadata.productId), {
+      sold: false,
+    });
   }
 }
