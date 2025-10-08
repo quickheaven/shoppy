@@ -59,8 +59,10 @@ export class CheckoutService {
     const session = await this.stripe.checkout.sessions.retrieve(
       event.data.object.id,
     );
-    await this.productService.update(parseInt(session.metadata.productId), {
-      sold: false,
-    });
+    if (session.metadata) {
+      await this.productService.update(parseInt(session.metadata.productId), {
+        sold: false,
+      });
+    }
   }
 }
