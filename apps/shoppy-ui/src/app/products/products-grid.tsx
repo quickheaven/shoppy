@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { io } from "socket.io-client";
 import revalidateProducts from "./actions/revalidate-products";
 import { API_URL } from "../common/constants/api";
+import getAuthentication from "../auth/actions/get-authentication";
 
 interface ProductsGridProps {
     products: IProduct[]
@@ -15,16 +16,26 @@ interface ProductsGridProps {
 export function ProductsGrid({ products }: ProductsGridProps) {
 
     useEffect(() => {
-        
-        const socket = io(API_URL!);
+    let socket: Socket;
 
-        socket.on('productUpdated', () => {
-            revalidateProducts();
-        });
+    const createSocket = async () => {
+      socket = io(API_URL!, {
+        auth: {
+          Authentication: await getAuthentication(),
+        },
+      });
 
-        return () => { socket?.disconnect(); };
+      socket.on("productUpdated", () => {
+        revalidateProducts();
+      });
+    };
 
-    }, []);
+    createSocket();
+
+    return () => {
+      socket?.disconnect();
+    };
+  }, []);
 
     return (
         <Grid container spacing={3} sx={{ height: '85vh', overflow: 'scroll' }}>
