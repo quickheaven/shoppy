@@ -10,6 +10,7 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
   Param,
+  Query,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateProductRequest } from './dto/create-product.request';
@@ -63,8 +64,8 @@ export class ProductsController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getProducts() {
-    return await this.productsService.getProducts();
+  async getProducts(@Query('status') status?: string) {
+    return await this.productsService.getProducts(status);
   }
 
   @Get(':productId')
