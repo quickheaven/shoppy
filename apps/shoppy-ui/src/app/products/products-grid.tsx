@@ -1,7 +1,7 @@
 "use client"
 
 import { Product as IProduct } from "./interfaces/product.interface"
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Product from "./product";
 import { useEffect } from "react";
 import { io, Socket } from "socket.io-client";
