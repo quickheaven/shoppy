@@ -2,6 +2,8 @@
 
 A modern e-commerce platform built with Next.js, NestJS, and Stripe integration.
 
+![Shoppy login screen](docs/images/shoppy_login.png)
+
 ## Project Structure
 
 This monorepo contains the following applications and packages:
@@ -50,12 +52,23 @@ cd shoppy
 pnpm install
 ```
 
-3. Set up environment variables:
-   - Copy `.env.example` to `.env` in both apps
-   - Configure the following variables:
-     - `DATABASE_URL`
-     - `STRIPE_SECRET_KEY`
-     - `JWT_SECRET`
+3. Create the environment files below. Keep secret values local and do not commit them.
+
+    In `apps/shoppy-backend/.env`, configure:
+
+    - `DATABASE_URL`: PostgreSQL connection string used by Prisma.
+    - `STRIPE_SECRET_KEY`: Stripe secret key used by the backend.
+    - `JWT_SECRET`: secret used to sign and verify authentication tokens.
+    - `JWT_EXPIRATION`: token lifetime, such as `1d`.
+    - `PORT`: port for the backend HTTP server.
+    - `API_URL`: present in the local backend configuration, but not currently read by the backend code.
+
+    In `apps/shoppy-ui/.env.local`, configure:
+
+    - `NEXT_PUBLIC_API_URL`: base URL of the backend API.
+    - `NEXT_PUBLIC_STRIPE_PUBLIC_KEY`: Stripe publishable key used by the browser checkout flow.
+
+    Next.js loads `.env.local` automatically. Variables prefixed with `NEXT_PUBLIC_` are included in browser code, so only put public values there; never put secrets in this file.
 
 ### Development
 
